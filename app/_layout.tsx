@@ -1,24 +1,42 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { FavoritesProvider } from '@src/context/FavoritesContext';
+import { AnimeColors } from '@src/constants/theme';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import React from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
-
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    return (
+        <SafeAreaProvider>
+            <FavoritesProvider>
+                <Stack
+                    screenOptions={{
+                        headerStyle: { backgroundColor: AnimeColors.background },
+                        headerTintColor: AnimeColors.textPrimary,
+                        headerTitleStyle: { fontWeight: '700' },
+                        contentStyle: { backgroundColor: AnimeColors.background },
+                    }}>
+                    <Stack.Screen name="index" options={{ headerShown: false }} />
+                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                    <Stack.Screen
+                        name="anime/[id]"
+                        options={{
+                            headerTransparent: true,
+                            headerTitle: '',
+                            headerBackTitle: 'Back',
+                        }}
+                    />
+                    <Stack.Screen
+                        name="player/[id]"
+                        options={{
+                            headerShown: false,
+                            presentation: 'fullScreenModal',
+                        }}
+                    />
+                </Stack>
+                <StatusBar style="light" />
+            </FavoritesProvider>
+        </SafeAreaProvider>
+    );
 }
